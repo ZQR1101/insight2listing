@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: insight2listing
       POSTGRES_PASSWORD: insight2listing
     ports:
-      - "5433:5432"
+      - "5050:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

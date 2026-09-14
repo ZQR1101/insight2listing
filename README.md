@@ -46,7 +46,7 @@ Copy-Item .env.example .env
 docker compose up -d postgres minio redis
 ```
 
-The Postgres host port is `5433` by default so it does not collide with an
+The Postgres host port is `5050` by default so it does not collide with an
 unrelated local Postgres. `DATABASE_URL` in `.env.example` points there.
 
 ### 2. Run the API

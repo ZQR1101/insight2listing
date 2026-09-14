@@ -19,7 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 os.environ.setdefault(
     "DATABASE_URL",
-    "postgresql+psycopg://insight2listing:insight2listing@localhost:5433/insight2listing",
+    "postgresql+psycopg://insight2listing:insight2listing@localhost:5050/insight2listing",
 )
 
 BASE_URL = os.environ["DATABASE_URL"]
