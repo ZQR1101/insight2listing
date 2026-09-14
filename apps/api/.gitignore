@@ -1,0 +1,7 @@
+# API-local ignored paths
+**/*.egg-info/
+**/__pycache__/
+apps/api/**/*.pyc
+coverage.xml
+htmlcov/
+.pytest_cache/

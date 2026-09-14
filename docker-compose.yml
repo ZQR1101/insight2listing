@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: insight2listing
       POSTGRES_PASSWORD: insight2listing
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -14,6 +14,21 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+
+  api:
+    build: ./apps/api
+    environment:
+      DATABASE_URL: postgresql+psycopg://insight2listing:insight2listing@postgres:5432/insight2listing
+      REDIS_URL: redis://redis:6379/0
+      OBJECT_STORAGE_ENDPOINT: http://minio:9000
+      OBJECT_STORAGE_BUCKET: insight2listing
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_started
+      minio:
+        condition: service_started
 
   minio:
     image: minio/minio:latest

@@ -34,3 +34,6 @@ Thumbs.db
 
 # Generated outputs
 reports/generated/
+
+# ZCode local tool state
+.zcode/

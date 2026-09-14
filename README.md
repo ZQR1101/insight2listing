@@ -2,7 +2,7 @@
 
 Evidence-grounded market insight, product opportunity validation, and intelligent Listing workflows for Amazon US.
 
-> This repository is scaffolded only. Product features are not implemented yet.
+> Status: **in progress**. The first milestone implements the backend API and the data-import pipeline. The web UI, chat, insight generation, and Amazon integration are later phases.
 
 ## Current scope
 
@@ -16,6 +16,14 @@ Evidence-grounded market insight, product opportunity validation, and intelligen
 
 The initial test products are compression packing cubes, glass oil sprayers, and car trash cans. Amazon seller authorization and production SP-API integration are deferred to a later beta phase.
 
+## Repository layout
+
+- `apps/api` — FastAPI backend, data import pipeline, PostgreSQL models and migrations (initial milestone)
+- `apps/web` — Next.js frontend (not yet implemented)
+- `apps/worker` — background task worker (not yet implemented)
+- `packages/*` — shared schemas, i18n, providers, rules, evals (not yet implemented)
+- `outputs/` — product and technical baseline documents
+
 ## Documentation
 
 - [中文详细产品与技术方案](outputs/Insight2Listing详细产品与技术方案.md)
@@ -26,14 +34,56 @@ The initial test products are compression packing cubes, glass oil sprayers, and
 
 ## Local setup
 
-The initial repository contains structure and documentation only. Runtime setup will be added in a later implementation phase.
+### Prerequirements
+
+- [uv](https://docs.astral.sh/uv/) for Python tooling
+- Docker (for the local database)
+
+### 1. Start the infrastructure
 
 ```powershell
 Copy-Item .env.example .env
-docker compose up -d
+docker compose up -d postgres minio redis
 ```
 
-Do not commit `.env` or any API key. The API key must remain on the backend, never in browser code.
+The Postgres host port is `5433` by default so it does not collide with an
+unrelated local Postgres. `DATABASE_URL` in `.env.example` points there.
+
+### 2. Run the API
+
+```bash
+cd apps/api
+uv sync
+uv run alembic upgrade head     # apply migrations
+uv run python run.py            # http://localhost:8000  (docs at /docs)
+```
+
+`run.py` (rather than `uvicorn app.main:app`) is used so the server runs on a
+SelectorEventLoop on Windows, which the psycopg async driver requires.
+
+### 3. Run tests, lint and typecheck
+
+```bash
+cd apps/api
+uv run pytest                   # requires the Postgres container running
+uv run ruff check src tests
+uv run mypy src
+```
+
+Optional: run the whole stack (API + dependencies) in containers:
+
+```bash
+docker compose up --build api
+```
+
+The test suite provisions a dedicated `insight2listing_test` database from
+`DATABASE_URL` and truncates tables between tests, so dev data is never touched.
+
+### Security notes
+
+Do not commit `.env` or any API key. Keys must stay on the backend and never
+appear in browser code or logs (see `SECURITY.md`). Uploaded cells beginning
+with spreadsheet-formula prefixes are escaped to prevent formula injection.
 
 ## License
 

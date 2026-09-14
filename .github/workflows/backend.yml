@@ -1,0 +1,57 @@
+name: Backend
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  api:
+    name: API (lint, typecheck, test, migrate)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: insight2listing
+          POSTGRES_USER: insight2listing
+          POSTGRES_PASSWORD: insight2listing
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U insight2listing -d insight2listing"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+psycopg://insight2listing:insight2listing@localhost:5432/insight2listing
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint
+        run: uv run ruff check src tests
+
+      - name: Typecheck
+        run: uv run mypy src
+
+      - name: Test
+        # conftest provisions a dedicated `insight2listing_test` database
+        # and runs end-to-end against ASGI, so no extra service is needed.
+        run: uv run pytest
+
+      - name: Verify migrations match models
+        run: |
+          uv run alembic upgrade head
+          uv run alembic check
