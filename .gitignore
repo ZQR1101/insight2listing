@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+dist/
+coverage/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local services and generated data
+data/local/
+storage/
+uploads/
+*.sqlite3
+*.db
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/settings.json
+
+# Generated outputs
+reports/generated/
