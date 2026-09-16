@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/FastAPI-0.14-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy"/>
-  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js"/>
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
   <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"/>
   <img src="https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="CI"/>
@@ -54,7 +54,7 @@ Listing 与视觉素材生成
 人工审核与导出
 ```
 
-**当前里程碑：** 后端与数据导入管线已经实现并通过测试；评论洞察、Listing 生成、视觉素材与 Web 界面是后续里程碑（见[路线图](#-roadmap)）。
+**当前里程碑：** 后端与数据导入管线已经实现并通过测试；Web 工作台基线已经可运行。评论洞察、Listing 生成与视觉素材是后续里程碑（见[路线图](#-roadmap)）。
 
 ### 核心亮点
 
@@ -114,13 +114,23 @@ uv run mypy src
 
 测试套件会根据 `DATABASE_URL` 自动创建独立的 `insight2listing_test` 库，并在每个用例间清空数据表，绝不触碰应用数据。
 
-### 4. 用容器跑整套应用
+### 4. 启动 Web 工作台
 
 ```bash
-docker compose up --build api
+cd apps/web
+npm install
+npm run dev                    # http://localhost:3000
 ```
 
-`api` 服务在启动时自动执行 Alembic 迁移，然后对外提供服务。
+前端支持中英文切换，当前展示工作流概览、候选商品、证据质量、数据导入入口和辅助聊天界面。
+
+### 5. 用容器跑整套应用
+
+```bash
+docker compose up --build
+```
+
+`api` 服务在启动时自动执行 Alembic 迁移；Web 工作台在 `http://localhost:3000` 提供服务。
 
 ---
 
@@ -146,7 +156,7 @@ docker compose up --build api
 | **商品机会卡** | 加权评分、置信度、缺失维度、评分版本化 |
 | **Listing 工作台** | 标题 / 五点 / 描述 / 搜索词生成、版本管理、事实与规则检查 |
 | **视觉素材** | 真实商品图编辑 + GPT Image 2、确定性文字排版、一致性检查 |
-| **Web 界面** | 工作流优先的 Next.js 界面，聊天作为辅助 |
+| **Web 界面** | ✅ 双语工作流概览、候选商品、证据质量、导入弹窗与辅助聊天基线 |
 | **Amazon SP-API** | 官方连接器 + 卖家 OAuth（后续 Beta 阶段） |
 
 ---
@@ -180,7 +190,7 @@ insight2listing/
 │   │   ├── alembic/             #   数据库迁移
 │   │   ├── tests/               #   pytest 测试套件
 │   │   └── run.py               #   面向 Windows 的开发服务器启动脚本
-│   ├── web/                     # Next.js 前端（尚未实现）
+│   ├── web/                     # Next.js 双语工作流前端
 │   └── worker/                  # 后台任务 Worker（尚未实现）
 ├── packages/
 │   ├── schemas/ ui/ i18n/ rules/ prompts/ evals/   # 共享包（规划中）

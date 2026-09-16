@@ -280,3 +280,25 @@ async def test_import_records_source_and_audit(client: AsyncClient, engine) -> N
         audits = (await session.execute(select(func.count()).select_from(AuditEvent))).scalar_one()
     assert sources == 1
     assert audits >= 1  # project.created + import.completed + maybe status change
+
+
+async def test_csv_row_with_extra_unquoted_field_does_not_crash(client: AsyncClient) -> None:
+    """A body containing an unquoted comma yields a CSV restkey (None header).
+
+    The extra column must be ignored (unresolved) rather than crashing field
+    mapping. Regression for the crash found during frontend integration.
+    """
+    project = await create_project(client)
+    raw = (
+        "product_external_id,rating,body\n"
+        "ASIN001,5,cubes compress really well, saved so much space\n"
+    )
+    resp = await _import(client, project["id"], "reviews.csv", raw.encode("utf-8"), target="reviews")
+    assert resp.status_code == 201, resp.text
+    report = resp.json()["report"]
+    assert report["imported"] == 1
+    assert report["rows_invalid"] == 0
+    assert report["errors"] == []
+    reviews = (await client.get(f"/api/v1/projects/{project['id']}/reviews")).json()
+    assert reviews["total"] == 1
+    assert reviews["items"][0]["body"] == "cubes compress really well"

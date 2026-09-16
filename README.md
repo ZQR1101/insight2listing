@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/FastAPI-0.14-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy"/>
-  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js"/>
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React"/>
   <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"/>
   <img src="https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="CI"/>
@@ -54,7 +54,7 @@ Fact, image & platform-rule checks
 Human review & export
 ```
 
-**Current milestone:** the backend and the data-import pipeline are implemented and tested. Comment insight, Listing generation, visual assets, and the web UI are the next milestones (see [Roadmap](#-roadmap)).
+**Current milestone:** the backend and data-import pipeline are implemented and tested, and the first Web workspace foundation is runnable. Comment insight, Listing generation, and visual assets are the next milestones (see [Roadmap](#-roadmap)).
 
 ### Highlights
 
@@ -114,13 +114,23 @@ uv run mypy src
 
 The test suite provisions a dedicated `insight2listing_test` database from `DATABASE_URL` and truncates tables between tests, so dev/application data is never touched.
 
-### 4. Run the whole stack in containers
+### 4. Run the Web workspace
 
 ```bash
-docker compose up --build api
+cd apps/web
+npm install
+npm run dev                    # http://localhost:3000
 ```
 
-The `api` service runs Alembic migrations on startup and then serves the app.
+The frontend includes bilingual navigation, workflow status, candidate products, evidence quality, an import dialog, and an assistant surface.
+
+### 5. Run the whole stack in containers
+
+```bash
+docker compose up --build
+```
+
+The `api` service runs Alembic migrations on startup; the Web workspace is served at `http://localhost:3000`.
 
 ---
 
@@ -146,7 +156,7 @@ The `api` service runs Alembic migrations on startup and then serves the app.
 | **Opportunity card** | Weighted scores, confidence, missing dimensions, per-version scoring |
 | **Listing workbench** | Title / bullets / description / search terms generation, versioning, fact & rule checks |
 | **Visual creatives** | Real-product image edits + GPT Image 2, deterministic text overlay, consistency checks |
-| **Web UI** | Workflow-first Next.js interface with chat as an assistant surfaces |
+| **Web UI** | ✅ Bilingual workflow overview, candidates, evidence quality, import dialog, and assistant foundation |
 | **Amazon SP-API** | Official connectors + seller OAuth in a later beta phase |
 
 ---
@@ -180,7 +190,7 @@ insight2listing/
 │   │   ├── alembic/             #   Database migrations
 │   │   ├── tests/               #   pytest suite
 │   │   └── run.py               #   Windows-friendly dev server launcher
-│   ├── web/                     # Next.js frontend (not yet implemented)
+│   ├── web/                     # Next.js bilingual workflow frontend
 │   └── worker/                  # Background task worker (not yet implemented)
 ├── packages/
 │   ├── schemas/ ui/ i18n/ rules/ prompts/ evals/   # shared packages (planned)

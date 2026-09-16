@@ -18,8 +18,15 @@ _NON_ALNUM = re.compile(r"[^0-9a-z_]")
 _CURRENCY_SUFFIXES = ("usd", "eur", "cny", "gbp", "jpy", "aud", "cad")
 
 
-def normalise_header(value: str) -> str:
-    """Lowercase, strip and collapse a header to snake_case for matching."""
+def normalise_header(value: str | None) -> str:
+    """Lowercase, strip and collapse a header to snake_case for matching.
+
+    ``None`` occurs when a data row has more columns than the header (CSV
+    ``restkey``); such cells have no useful column name, so yield an empty
+    string that is treated as unresolved rather than crashing.
+    """
+    if value is None:
+        return ""
     lowered = value.lower()
     cleaned = _NON_ALNUM.sub("_", lowered).strip("_")
     return re.sub(r"_+", "_", cleaned)

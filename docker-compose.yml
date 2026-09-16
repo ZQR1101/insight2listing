@@ -30,6 +30,16 @@ services:
       minio:
         condition: service_started
 
+  web:
+    build: ./apps/web
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_started
+
   minio:
     image: minio/minio:latest
     command: server /data --console-address ":9001"
