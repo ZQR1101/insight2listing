@@ -8,13 +8,18 @@ complete.
 from app.models.audit import AuditEvent
 from app.models.catalog import ProductCandidate, ProductVariant
 from app.models.identity import User, Workspace
+from app.models.insight import Evidence, Insight
+from app.models.opportunity import OpportunityCard
 from app.models.project import Project
 from app.models.review import Review
 from app.models.source import ImportBatch, SourceRecord
 
 __all__ = [
     "AuditEvent",
+    "Evidence",
     "ImportBatch",
+    "Insight",
+    "OpportunityCard",
     "ProductCandidate",
     "ProductVariant",
     "Project",

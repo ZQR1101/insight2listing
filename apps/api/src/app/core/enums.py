@@ -76,6 +76,54 @@ class AuditAction(StrEnum):
     IMPORT_PREVIEWED = "import.previewed"
     IMPORT_COMPLETED = "import.completed"
     IMPORT_FAILED = "import.failed"
+    INSIGHT_GENERATED = "insight.generated"
+    INSIGHT_STATUS_CHANGED = "insight.status_changed"
+    INSIGHT_EDITED = "insight.edited"
+    OPPORTUNITY_CARD_GENERATED = "opportunity_card.generated"
+
+
+class Sentiment(StrEnum):
+    """Sentiment of an insight cluster (plan section 9.1)."""
+
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    NEUTRAL = "neutral"
+
+
+class Severity(StrEnum):
+    """How serious/urgent a pain point is."""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class InsightStatus(StrEnum):
+    """Lifecycle of an insight (plan section 9.3)."""
+
+    GENERATED = "generated"
+    ACCEPTED = "accepted"
+    EDITED = "edited"
+    REJECTED = "rejected"
+    SUPERSEDED = "superseded"
+
+
+class EvidenceType(StrEnum):
+    """Kinds of evidence an insight can cite (plan section 9.2)."""
+
+    RAW_REVIEW = "raw_review"
+    REVIEW_EXCERPT = "review_excerpt"
+    AGGREGATED_TOPIC = "aggregated_topic"
+    TREND_METRIC = "trend_metric"
+    PRODUCT_ATTRIBUTE = "product_attribute"
+    PRICE_OBSERVATION = "price_observation"
+    SALES_RANK_OBSERVATION = "sales_rank_observation"
+    USER_CONFIRMED_FACT = "user_confirmed_fact"
+
+
+class OpportunityCardStatus(StrEnum):
+    DRAFT = "draft"
+    FINAL = "final"
 
 
 class Currency(StrEnum):
