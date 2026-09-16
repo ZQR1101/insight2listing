@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { SiteShell } from "@/components/site-shell";
-import { PlaceholderPanel } from "@/components/placeholder-panel";
+import { EvidenceView } from "@/components/evidence-view";
 
 export default async function EvidencePage({
   params,
@@ -12,7 +12,7 @@ export default async function EvidencePage({
 
   return (
     <SiteShell title={t("evidence")}>
-      <PlaceholderPanel />
+      <EvidenceView />
     </SiteShell>
   );
 }

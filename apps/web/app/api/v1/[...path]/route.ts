@@ -42,11 +42,21 @@ async function handle(request: Request, ctx: { params: Promise<{ path: string[] 
 
   const body = method === "GET" || method === "HEAD" ? undefined : await request.arrayBuffer();
 
-  const upstream = await fetch(url.toString(), {
-    method,
-    headers,
-    body: body === undefined ? undefined : body,
-  });
+  let upstream: Response;
+  try {
+    upstream = await fetch(url.toString(), {
+      method,
+      headers,
+      body: body === undefined ? undefined : body,
+    });
+  } catch {
+    // Backend unreachable: return a clean error instead of an empty 500 so the
+    // UI can show something meaningful (the handler proxies, it does not retry).
+    return NextResponse.json(
+      { detail: `backend unreachable at ${base}` },
+      { status: 502 }
+    );
+  }
 
   const responseHeaders = new Headers();
   upstream.headers.forEach((value, key) => {

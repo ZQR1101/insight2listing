@@ -106,5 +106,29 @@
     "products": "products",
     "reviews": "reviews",
     "comingSoon": "Coming soon — this module ships in a later milestone."
+  },
+  "evidence": {
+    "desc": "Evidence-bound comment insights and explainable opportunity cards from your imported reviews.",
+    "insightsTitle": "Comment Insights",
+    "project": "Project",
+    "selectProject": "Select a project",
+    "generate": "Generate insights",
+    "generating": "Generating…",
+    "notGenerated": "No insights yet — import reviews first, then generate.",
+    "empty": "No insights for this project.",
+    "sentiment": "Sentiment",
+    "severity": "Severity",
+    "frequency": "Mentions",
+    "confidence": "Confidence",
+    "evidence": "Evidence",
+    "accept": "Accept",
+    "reject": "Reject",
+    "cards": "Opportunity Cards",
+    "cardsEmpty": "No opportunity cards yet.",
+    "cardScore": "Opportunity score",
+    "cardConfidence": "Confidence",
+    "missing": "Missing dimensions",
+    "risk": "Risk flags",
+    "keywords": "Keywords"
   }
 }

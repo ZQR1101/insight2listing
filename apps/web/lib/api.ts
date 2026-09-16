@@ -178,3 +178,103 @@ export function importFile(
     body: form,
   });
 }
+
+// ---- Phase C: insights & opportunity cards ----
+
+export interface Evidence {
+  id: string;
+  insight_id: string;
+  evidence_type: string;
+  source_entity_id: string | null;
+  excerpt: string;
+  support_strength: number | null;
+  observed_at: string | null;
+}
+
+export interface Insight {
+  id: string;
+  project_id: string;
+  product_id: string | null;
+  topic: string;
+  summary: string | null;
+  sentiment: "positive" | "negative" | "neutral";
+  frequency: number;
+  severity: "low" | "medium" | "high";
+  rating_impact: number | null;
+  recency_score: number | null;
+  cross_competitor_score: number | null;
+  confidence: number | null;
+  status: "generated" | "accepted" | "edited" | "rejected" | "superseded";
+  created_at: string;
+}
+
+export interface InsightDetail extends Insight {
+  evidence: Evidence[];
+}
+
+export interface OpportunityCard {
+  id: string;
+  project_id: string;
+  product_id: string;
+  title: string;
+  target_audience: string | null;
+  use_cases: string[] | null;
+  competitor_gaps: string[] | null;
+  differentiation_ideas: string[] | null;
+  keywords: string[] | null;
+  opportunity_score: number | null;
+  dimension_scores: Record<string, number | null> | null;
+  score_version: string | null;
+  confidence: number | null;
+  missing_dimensions: string[] | null;
+  risk_flags: string[] | null;
+  status: string;
+  created_at: string;
+}
+
+export interface GenerateResult {
+  insights: number;
+  cards: number;
+  reviews_attributed: number;
+  reviews_skipped: number;
+}
+
+export function generateInsights(projectId: string): Promise<GenerateResult> {
+  return request<GenerateResult>(`/projects/${projectId}/insights/generate`, {
+    method: "POST",
+  });
+}
+
+export function listInsights(
+  projectId: string,
+  insightStatus?: string
+): Promise<{ items: Insight[]; total: number }> {
+  const q = insightStatus ? `?insight_status=${encodeURIComponent(insightStatus)}` : "";
+  return request<{ items: Insight[]; total: number }>(
+    `/projects/${projectId}/insights${q}`
+  );
+}
+
+export function getInsight(projectId: string, id: string): Promise<InsightDetail> {
+  return request<InsightDetail>(`/projects/${projectId}/insights/${id}`);
+}
+
+export function setInsightStatus(
+  projectId: string,
+  id: string,
+  status: string
+): Promise<Insight> {
+  return request<Insight>(`/projects/${projectId}/insights/${id}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+}
+
+export function listOpportunityCards(
+  projectId: string
+): Promise<{ items: OpportunityCard[]; total: number }> {
+  return request<{ items: OpportunityCard[]; total: number }>(
+    `/projects/${projectId}/opportunity-cards`
+  );
+}

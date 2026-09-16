@@ -106,5 +106,29 @@
     "products": "个商品",
     "reviews": "条评论",
     "comingSoon": "即将上线——该模块属于后续里程碑。"
+  },
+  "evidence": {
+    "desc": "基于证据的评论洞察与可解释机会卡，来自你导入的评论。",
+    "insightsTitle": "评论洞察",
+    "project": "项目",
+    "selectProject": "选择项目",
+    "generate": "生成洞察",
+    "generating": "生成中…",
+    "notGenerated": "还没有洞察——先导入评论，再点击生成。",
+    "empty": "该项目暂无洞察。",
+    "sentiment": "情感",
+    "severity": "严重度",
+    "frequency": "提及数",
+    "confidence": "置信度",
+    "evidence": "证据",
+    "accept": "接受",
+    "reject": "拒绝",
+    "cards": "商品机会卡",
+    "cardsEmpty": "还没有机会卡。",
+    "cardScore": "机会评分",
+    "cardConfidence": "置信度",
+    "missing": "缺失维度",
+    "risk": "风险标志",
+    "keywords": "关键词"
   }
 }
