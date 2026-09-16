@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from sqlalchemy import select
 
 from app.api import (
+    creatives,
     facts,
     health,
     imports,
@@ -62,6 +63,7 @@ app.include_router(insights.router)
 app.include_router(opportunity_cards.router)
 app.include_router(facts.router)
 app.include_router(listings.router)
+app.include_router(creatives.router)
 
 
 @app.get("/", include_in_schema=False)

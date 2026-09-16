@@ -86,6 +86,37 @@ class AuditAction(StrEnum):
     LISTING_EDITED = "listing.edited"
     LISTING_APPROVED = "listing.approved"
     LISTING_EXPORTED = "listing.exported"
+    IMAGE_UPLOADED = "image.uploaded"
+    CREATIVE_GENERATED = "creative.generated"
+    CREATIVE_APPROVED = "creative.approved"
+    CREATIVE_REJECTED = "creative.rejected"
+
+
+class AssetType(StrEnum):
+    """Creative asset types (plan section 13.2)."""
+
+    MAIN_IMAGE_EDIT = "main_image_edit"
+    LIFESTYLE_IMAGE = "lifestyle_image"
+    FEATURE_IMAGE = "feature_image"
+    COMPARISON_IMAGE = "comparison_image"
+    SIZE_IMAGE = "size_image"
+    DETAIL_PAGE_SECTION = "detail_page_section"
+
+
+class CheckStatus(StrEnum):
+    """Outcome of an automated image check."""
+
+    PENDING = "pending"
+    PASSED = "passed"
+    FAILED = "failed"
+
+
+class ReviewStatus(StrEnum):
+    """Human review lifecycle for creatives (plan section 13.7)."""
+
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
 
 
 class FactType(StrEnum):

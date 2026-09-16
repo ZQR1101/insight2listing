@@ -9,6 +9,7 @@ from app.models.audit import AuditEvent
 from app.models.catalog import ProductCandidate, ProductVariant
 from app.models.facts import ProductFact
 from app.models.identity import User, Workspace
+from app.models.images import CreativeAsset, ProductImage
 from app.models.insight import Evidence, Insight
 from app.models.listing import ListingVersion
 from app.models.opportunity import OpportunityCard
@@ -18,6 +19,7 @@ from app.models.source import ImportBatch, SourceRecord
 
 __all__ = [
     "AuditEvent",
+    "CreativeAsset",
     "Evidence",
     "ImportBatch",
     "Insight",
@@ -25,6 +27,7 @@ __all__ = [
     "OpportunityCard",
     "ProductCandidate",
     "ProductFact",
+    "ProductImage",
     "ProductVariant",
     "Project",
     "Review",

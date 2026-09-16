@@ -46,6 +46,14 @@ class Settings(BaseSettings):
     #: Allow a deterministic message when a raw secret would otherwise leak.
     secret_redaction: str = "[REDACTED]"
 
+    # Visual generation (plan section 13). The OpenAI engine is dormant unless
+    # a key is configured; "auto" picks openai when a key exists, else mock.
+    image_provider: str = "auto"  # auto | mock | openai
+    local_storage_dir: str = str(_PROJECT_ROOT / "data" / "local" / "storage")
+    max_image_bytes: int = 10 * 1024 * 1024
+    #: Minimum shortest side for uploaded product photos (section 13.6).
+    min_image_px: int = 1000
+
     def redact(self, value: str) -> str:
         """Return a redacted placeholder for a secret value (e.g. for logging)."""
         return self.secret_redaction if value else value
