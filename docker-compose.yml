@@ -23,7 +23,7 @@ services:
       OBJECT_STORAGE_ENDPOINT: http://minio:9000
       OBJECT_STORAGE_BUCKET: insight2listing
     ports:
-      - "8000:8000"
+      - "8100:8100"
     depends_on:
       postgres:
         condition: service_started
@@ -35,7 +35,7 @@ services:
     environment:
       # Runtime target for the web API proxy; the `api` hostname resolves to
       # the api service on the compose network (no rebuild required to change).
-      API_URL: http://api:8000
+      API_URL: http://api:8100
     ports:
       - "3000:3000"
     depends_on:

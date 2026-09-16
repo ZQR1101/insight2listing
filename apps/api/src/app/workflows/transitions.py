@@ -15,3 +15,19 @@ def can_transition(current: WorkflowState, target: WorkflowState) -> bool:
         return index_of(target) >= index_of(current)
     except ValueError:
         return False
+
+
+def advance_status(current: str, *targets: WorkflowState) -> str:
+    """Apply forward-only targets in order and return the resulting status.
+
+    Unknown current statuses fall back to DRAFT (the machine's entry point).
+    Targets that would move backwards are skipped.
+    """
+    try:
+        state = WorkflowState(current)
+    except ValueError:
+        state = WorkflowState.DRAFT
+    for target in targets:
+        if can_transition(state, target):
+            state = target
+    return state.value

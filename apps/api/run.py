@@ -16,7 +16,8 @@ import sys
 import uvicorn
 
 HOST = "0.0.0.0"
-PORT = 8000
+# 8100 (not 8000) to avoid clashing with other local projects' backends.
+PORT = 8100
 
 
 def main() -> None:

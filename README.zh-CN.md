@@ -98,7 +98,7 @@ Postgres 宿主端口默认是 `5050`，避免与本地其他库冲突；`.env.e
 cd apps/api
 uv sync
 uv run alembic upgrade head     # 应用数据库迁移
-uv run python run.py            # http://localhost:8000  （OpenAPI 文档在 /docs）
+uv run python run.py            # http://localhost:8100  （OpenAPI 文档在 /docs）
 ```
 
 > 🪟 **Windows 注意：** `run.py` 会用一个 SelectorEventLoop 启动 uvicorn，因为 psycopg 异步驱动不支持 Windows 默认的 ProactorEventLoop；在 Windows 上建议用它而不是 `uvicorn app.main:app`。

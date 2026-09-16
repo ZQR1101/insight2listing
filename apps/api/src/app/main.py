@@ -12,7 +12,17 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy import select
 
-from app.api import health, imports, insights, opportunity_cards, products, projects, reviews
+from app.api import (
+    facts,
+    health,
+    imports,
+    insights,
+    listings,
+    opportunity_cards,
+    products,
+    projects,
+    reviews,
+)
 from app.core.config import get_settings
 from app.core.db import get_session_factory
 from app.models.identity import Workspace
@@ -50,6 +60,8 @@ app.include_router(products.router)
 app.include_router(reviews.router)
 app.include_router(insights.router)
 app.include_router(opportunity_cards.router)
+app.include_router(facts.router)
+app.include_router(listings.router)
 
 
 @app.get("/", include_in_schema=False)

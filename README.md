@@ -98,7 +98,7 @@ The Postgres host port is `5050` by default so it does not collide with an unrel
 cd apps/api
 uv sync
 uv run alembic upgrade head     # apply migrations
-uv run python run.py            # http://localhost:8000  (OpenAPI docs at /docs)
+uv run python run.py            # http://localhost:8100  (OpenAPI docs at /docs)
 ```
 
 > 🪟 **Windows note:** `run.py` drives uvicorn on a SelectorEventLoop because the psycopg async driver cannot run on Windows' default ProactorEventLoop. Prefer it over `uvicorn app.main:app` on Windows.

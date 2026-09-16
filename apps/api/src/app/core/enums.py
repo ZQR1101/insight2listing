@@ -80,6 +80,42 @@ class AuditAction(StrEnum):
     INSIGHT_STATUS_CHANGED = "insight.status_changed"
     INSIGHT_EDITED = "insight.edited"
     OPPORTUNITY_CARD_GENERATED = "opportunity_card.generated"
+    FACT_CREATED = "fact.created"
+    FACT_STATUS_CHANGED = "fact.status_changed"
+    LISTING_GENERATED = "listing.generated"
+    LISTING_EDITED = "listing.edited"
+    LISTING_APPROVED = "listing.approved"
+    LISTING_EXPORTED = "listing.exported"
+
+
+class FactType(StrEnum):
+    """Product fact categories (plan section 6.6)."""
+
+    MATERIAL = "material"
+    SIZE = "size"
+    WEIGHT = "weight"
+    CAPACITY = "capacity"
+    ACCESSORY = "accessory"
+    COLOR = "color"
+    USAGE_LIMITATION = "usage_limitation"
+    CERTIFICATION = "certification"
+
+
+class FactStatus(StrEnum):
+    """Verification lifecycle of a product fact (plan section 11.2)."""
+
+    UNVERIFIED = "unverified"
+    USER_CONFIRMED = "user_confirmed"
+    DOCUMENT_CONFIRMED = "document_confirmed"
+    REJECTED = "rejected"
+    EXPIRED = "expired"
+
+
+class ListingStatus(StrEnum):
+    """Listing version lifecycle (plan section 12.3)."""
+
+    DRAFT = "draft"
+    APPROVED = "approved"
 
 
 class Sentiment(StrEnum):

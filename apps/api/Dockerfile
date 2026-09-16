@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir uv \
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8100
 
 # Migrations run at startup so a fresh database is provisioned automatically.
 # Use the venv binaries directly: `uv run` would re-sync dev dependencies.

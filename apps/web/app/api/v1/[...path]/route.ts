@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 // Runtime-configurable API proxy. Forwarding the request at request-time (rather
 // than baking a destination into next.config rewrites at build time) means the
-// backend URL can be set as a runtime env var (e.g. API_URL=http://api:8000 in
-// Docker, or http://localhost:8000 in dev) with no rebuild.
-const FALLBACK_API_URL = "http://localhost:8000";
+// backend URL can be set as a runtime env var (e.g. API_URL=http://api:8100 in
+// Docker, or http://localhost:8100 in dev) with no rebuild.
+const FALLBACK_API_URL = "http://localhost:8100";
 
 const HOP_BY_HOP = new Set([
   "connection",
