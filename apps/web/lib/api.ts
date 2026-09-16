@@ -278,3 +278,165 @@ export function listOpportunityCards(
     `/projects/${projectId}/opportunity-cards`
   );
 }
+
+// ---- Phase D: product facts & Listing workbench ----
+
+export type FactStatus =
+  | "unverified"
+  | "user_confirmed"
+  | "document_confirmed"
+  | "rejected"
+  | "expired";
+
+export interface ProductFact {
+  id: string;
+  project_id: string;
+  product_id: string;
+  variant_id: string | null;
+  fact_type: string;
+  value: string;
+  unit: string | null;
+  source: string | null;
+  verification_status: FactStatus;
+  verified_by: string | null;
+  verified_at: string | null;
+  expires_at: string | null;
+  created_at: string;
+}
+
+export interface BulletRef {
+  text: string;
+  fact_ids: string[];
+  insight_ids: string[];
+}
+
+export interface ListingVersion {
+  id: string;
+  project_id: string;
+  product_id: string;
+  marketplace: string;
+  locale: string;
+  title: string;
+  bullet_points: BulletRef[] | null;
+  description: string | null;
+  search_terms: string | null;
+  model: string | null;
+  prompt_version: string | null;
+  input_snapshot_id: string | null;
+  status: string;
+  fact_check: { passed: boolean | null; issues?: { field: string; issue: string; severity: string }[] } | null;
+  rule_check: { passed: boolean | null; issues?: { field: string; issue: string; severity: string }[] } | null;
+  created_at: string;
+}
+
+export function listFacts(
+  projectId: string,
+  productId?: string
+): Promise<{ items: ProductFact[]; total: number }> {
+  const q = productId ? `?product_id=${encodeURIComponent(productId)}` : "";
+  return request<{ items: ProductFact[]; total: number }>(
+    `/projects/${projectId}/facts${q}`
+  );
+}
+
+export function createFact(
+  projectId: string,
+  productId: string,
+  payload: { fact_type: string; value: string; unit?: string }
+): Promise<ProductFact> {
+  return request<ProductFact>(`/projects/${projectId}/products/${productId}/facts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function setFactStatus(
+  projectId: string,
+  factId: string,
+  status: FactStatus
+): Promise<ProductFact> {
+  return request<ProductFact>(`/projects/${projectId}/facts/${factId}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+}
+
+export function deleteFact(projectId: string, factId: string): Promise<void> {
+  return request<void>(`/projects/${projectId}/facts/${factId}`, {
+    method: "DELETE",
+  });
+}
+
+export function confirmFacts(
+  projectId: string
+): Promise<{ project_id: string; status: string; confirmed_facts: number }> {
+  return request<{ project_id: string; status: string; confirmed_facts: number }>(
+    `/projects/${projectId}/facts/confirm`,
+    { method: "POST" }
+  );
+}
+
+export function generateListing(
+  projectId: string,
+  productId: string
+): Promise<ListingVersion> {
+  return request<ListingVersion>(
+    `/projects/${projectId}/products/${productId}/listings/generate`,
+    { method: "POST" }
+  );
+}
+
+export function listListings(
+  projectId: string,
+  productId?: string
+): Promise<{ items: ListingVersion[]; total: number }> {
+  const q = productId ? `?product_id=${encodeURIComponent(productId)}` : "";
+  return request<{ items: ListingVersion[]; total: number }>(
+    `/projects/${projectId}/listings${q}`
+  );
+}
+
+export function approveListing(
+  projectId: string,
+  listingId: string
+): Promise<ListingVersion> {
+  return request<ListingVersion>(
+    `/projects/${projectId}/listings/${listingId}/approve`,
+    { method: "POST" }
+  );
+}
+
+export interface ExportedFile {
+  filename: string;
+  content: string;
+  mediaType: string;
+}
+
+export async function exportListing(
+  projectId: string,
+  listingId: string,
+  format: "json" | "markdown" | "csv"
+): Promise<ExportedFile> {
+  const res = await fetch(
+    `${BASE}/projects/${projectId}/listings/${listingId}/export?format=${format}`
+  );
+  if (!res.ok) {
+    let detail = res.statusText;
+    try {
+      const body = await res.json();
+      if (body?.detail) detail = String(body.detail);
+    } catch {
+      /* keep statusText */
+    }
+    throw new Error(detail);
+  }
+  const disposition = res.headers.get("content-disposition") ?? "";
+  const match = /filename="([^"]+)"/.exec(disposition);
+  return {
+    filename: match?.[1] ?? `listing.${format === "markdown" ? "md" : format}`,
+    content: await res.text(),
+    mediaType: res.headers.get("content-type") ?? "text/plain",
+  };
+}

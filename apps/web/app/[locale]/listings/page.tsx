@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { SiteShell } from "@/components/site-shell";
-import { PlaceholderPanel } from "@/components/placeholder-panel";
+import { ListingStudio } from "@/components/listing-studio";
 
 export default async function ListingsPage({
   params,
@@ -12,7 +12,7 @@ export default async function ListingsPage({
 
   return (
     <SiteShell title={t("listings")}>
-      <PlaceholderPanel />
+      <ListingStudio />
     </SiteShell>
   );
 }
