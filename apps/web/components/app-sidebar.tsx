@@ -8,6 +8,7 @@ import {
   DatabaseIcon,
   UsersIcon,
   FileTextIcon,
+  ImageIcon,
   SettingsIcon,
   CircleHelpIcon,
 } from "lucide-react";
@@ -32,6 +33,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: t("candidates"), url: href("/candidates"), icon: <FolderIcon /> },
     { title: t("evidence"), url: href("/evidence"), icon: <UsersIcon /> },
     { title: t("listings"), url: href("/listings"), icon: <FileTextIcon /> },
+    { title: t("creatives"), url: href("/creatives"), icon: <ImageIcon /> },
   ];
 
   const navSecondary = [

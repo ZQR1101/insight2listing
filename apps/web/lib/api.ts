@@ -101,7 +101,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     let detail = res.statusText;
     try {
       const body = await res.json();
-      if (body?.detail) detail = String(body.detail);
+      if (body?.detail) {
+        detail =
+          typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail);
+      }
     } catch {
       /* keep statusText */
     }
@@ -439,4 +442,137 @@ export async function exportListing(
     content: await res.text(),
     mediaType: res.headers.get("content-type") ?? "text/plain",
   };
+}
+// ---- Phase E: product images & creatives ----
+
+export interface ProductImage {
+  id: string;
+  project_id: string;
+  product_id: string;
+  filename: string;
+  content_type: string;
+  size_bytes: number;
+  width: number;
+  height: number;
+  checksum: string;
+  created_at: string;
+}
+
+export interface CreativeAsset {
+  id: string;
+  project_id: string;
+  product_id: string;
+  variant_id: string | null;
+  asset_type: string;
+  locale: string;
+  source_images: string[] | null;
+  creative_brief: Record<string, unknown> | null;
+  prompt: string | null;
+  model: string | null;
+  size_bytes: number | null;
+  width: number | null;
+  height: number | null;
+  consistency_status: "pending" | "passed" | "failed";
+  compliance_status: "pending" | "passed" | "failed";
+  human_review_status: "pending" | "approved" | "rejected";
+  created_at: string;
+}
+
+/** Proxy URL for the raw uploaded image bytes (usable as <img src>). */
+export function imageUrl(projectId: string, imageId: string): string {
+  return `${BASE}/projects/${projectId}/images/${imageId}/file`;
+}
+
+/** Proxy URL for the generated creative bytes (usable as <img src>). */
+export function creativeUrl(projectId: string, creativeId: string): string {
+  return `${BASE}/projects/${projectId}/creatives/${creativeId}/file`;
+}
+
+export function listImages(
+  projectId: string,
+  productId: string
+): Promise<{ items: ProductImage[]; total: number }> {
+  return request<{ items: ProductImage[]; total: number }>(
+    `/projects/${projectId}/products/${productId}/images`
+  );
+}
+
+export function uploadImage(
+  projectId: string,
+  productId: string,
+  file: File,
+  rightsAttested: boolean
+): Promise<ProductImage> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("rights_attested", String(rightsAttested));
+  return request<ProductImage>(`/projects/${projectId}/products/${productId}/images`, {
+    method: "POST",
+    body: form,
+  });
+}
+
+export function generateCreative(
+  projectId: string,
+  productId: string,
+  payload: {
+    asset_type: string;
+    source_image_ids: string[];
+    overlay_lines: string[];
+  }
+): Promise<CreativeAsset> {
+  return request<CreativeAsset>(
+    `/projects/${projectId}/products/${productId}/creatives/generate`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+}
+
+export function listCreatives(
+  projectId: string,
+  productId?: string
+): Promise<{ items: CreativeAsset[]; total: number }> {
+  const q = productId ? `?product_id=${encodeURIComponent(productId)}` : "";
+  return request<{ items: CreativeAsset[]; total: number }>(
+    `/projects/${projectId}/creatives${q}`
+  );
+}
+
+export function reviewCreative(
+  projectId: string,
+  creativeId: string,
+  decision: "approved" | "rejected"
+): Promise<CreativeAsset> {
+  return request<CreativeAsset>(
+    `/projects/${projectId}/creatives/${creativeId}/${decision}`,
+    { method: "POST" }
+  );
+}
+
+export interface BinaryFile {
+  filename: string;
+  blob: Blob;
+}
+
+export async function downloadCreative(
+  projectId: string,
+  creativeId: string
+): Promise<BinaryFile> {
+  const res = await fetch(`${BASE}/projects/${projectId}/creatives/${creativeId}/download`);
+  if (!res.ok) {
+    let detail = res.statusText;
+    try {
+      const body = await res.json();
+      if (body?.detail) detail = String(body.detail);
+    } catch {
+      /* keep statusText */
+    }
+    throw new Error(detail);
+  }
+  const disposition = res.headers.get("content-disposition") ?? "";
+  const match = /filename="([^"]+)"/.exec(disposition);
+  return { filename: match?.[1] ?? "creative.png", blob: await res.blob() };
 }

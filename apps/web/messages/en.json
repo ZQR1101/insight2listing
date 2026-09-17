@@ -9,6 +9,7 @@
     "candidates": "Candidates",
     "evidence": "Review Evidence",
     "listings": "Listings",
+    "creatives": "Creatives",
     "dataImport": "Data Import",
     "settings": "Settings",
     "help": "Get Help",
@@ -28,6 +29,7 @@
     "candidates": "Product Candidates",
     "evidence": "Review Evidence",
     "listings": "Listing Studio",
+    "creatives": "Creatives",
     "settings": "Settings"
   },
   "dashboard": {
@@ -176,5 +178,35 @@
     "description": "Description",
     "searchTerms": "Search terms",
     "refs": "refs"
+  },
+  "creatives": {
+    "desc": "Upload real product photos, generate creatives from facts and insights, review before export.",
+    "product": "Product",
+    "selectProduct": "Select a product",
+    "imagesTitle": "Product Photos",
+    "rightsHint": "I confirm I hold the usage rights to this photo.",
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "noImages": "No product photos yet — uploads must be PNG/JPG with a shortest side of at least 1000px.",
+    "creativesTitle": "Creatives",
+    "assetType": "Asset type",
+    "sourceImages": "Source photos (required for main image)",
+    "overlayLines": "Overlay text lines (comma separated; not for main image)",
+    "generate": "Generate creative",
+    "generating": "Generating…",
+    "noCreatives": "No creatives yet.",
+    "type_main_image_edit": "Main image edit",
+    "type_lifestyle_image": "Lifestyle",
+    "type_feature_image": "Feature",
+    "type_comparison_image": "Comparison",
+    "type_size_image": "Size",
+    "type_detail_page_section": "Detail section",
+    "consistency": "Consistency",
+    "compliance": "Compliance",
+    "review": "Review",
+    "approve": "Approve",
+    "reject": "Reject",
+    "download": "Download",
+    "preview": "Preview"
   }
 }

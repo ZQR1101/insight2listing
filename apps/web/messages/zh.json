@@ -9,6 +9,7 @@
     "candidates": "候选商品",
     "evidence": "评论证据",
     "listings": "Listing 工作台",
+    "creatives": "视觉素材",
     "dataImport": "数据导入",
     "settings": "设置",
     "help": "帮助",
@@ -28,6 +29,7 @@
     "candidates": "候选商品",
     "evidence": "评论证据",
     "listings": "Listing 工作室",
+    "creatives": "视觉素材",
     "settings": "设置"
   },
   "dashboard": {
@@ -176,5 +178,35 @@
     "description": "商品描述",
     "searchTerms": "搜索词",
     "refs": "条依据"
+  },
+  "creatives": {
+    "desc": "上传真实商品图，从事实与洞察生成视觉素材，审核通过后才能导出。",
+    "product": "商品",
+    "selectProduct": "选择商品",
+    "imagesTitle": "商品照片",
+    "rightsHint": "我确认拥有这张照片的使用权。",
+    "upload": "上传",
+    "uploading": "上传中…",
+    "noImages": "还没有商品照片——上传需 PNG/JPG 格式，短边至少 1000px。",
+    "creativesTitle": "视觉素材",
+    "assetType": "素材类型",
+    "sourceImages": "源照片（主图必选）",
+    "overlayLines": "叠加文案（逗号分隔；主图不可用）",
+    "generate": "生成素材",
+    "generating": "生成中…",
+    "noCreatives": "还没有视觉素材。",
+    "type_main_image_edit": "主图编辑",
+    "type_lifestyle_image": "场景图",
+    "type_feature_image": "功能图",
+    "type_comparison_image": "对比图",
+    "type_size_image": "尺寸图",
+    "type_detail_page_section": "详情页模块",
+    "consistency": "一致性",
+    "compliance": "合规",
+    "review": "人工审核",
+    "approve": "批准",
+    "reject": "拒绝",
+    "download": "下载",
+    "preview": "预览"
   }
 }
