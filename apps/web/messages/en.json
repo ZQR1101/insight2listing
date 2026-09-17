@@ -181,6 +181,7 @@
   },
   "creatives": {
     "desc": "Upload real product photos, generate creatives from facts and insights, review before export.",
+    "project": "Project",
     "product": "Product",
     "selectProduct": "Select a product",
     "imagesTitle": "Product Photos",

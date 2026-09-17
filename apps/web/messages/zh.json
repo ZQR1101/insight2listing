@@ -181,6 +181,7 @@
   },
   "creatives": {
     "desc": "上传真实商品图，从事实与洞察生成视觉素材，审核通过后才能导出。",
+    "project": "项目",
     "product": "商品",
     "selectProduct": "选择商品",
     "imagesTitle": "商品照片",
