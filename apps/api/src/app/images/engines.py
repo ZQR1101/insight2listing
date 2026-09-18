@@ -86,26 +86,67 @@ class MockImageEngine:
 
 
 class OpenAIImageEngine:
-    """Real gpt-image-2 wiring via the OpenAI images API (dormant without a key)."""
+    """gpt-image-2 wiring via the OpenAI images API or a compatible gateway.
+
+    ``edits_mode="multipart"`` targets the official API (multipart files);
+    ``edits_mode="json"`` targets gateways like Modelflare whose edits endpoint
+    takes JSON with data-URL references (section references/api.md).
+    """
 
     engine_name = "openai"
 
-    def __init__(self, api_key: str, model: str, base_url: str = "https://api.openai.com/v1") -> None:
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        base_url: str = "https://api.openai.com/v1",
+        *,
+        edits_mode: str = "multipart",
+    ) -> None:
         self._api_key = api_key
         self._model = model
         self._base_url = base_url.rstrip("/")
+        self._edits_mode = edits_mode
+
+    def _headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self._api_key}"}
+
+    @staticmethod
+    def _to_data_url(data: bytes) -> str:
+        import base64
+
+        mime = sniff_content_type(data)
+        return f"data:{mime};base64,{base64.b64encode(data).decode('ascii')}"
 
     async def edit(self, sources: list[bytes], prompt: str) -> EngineResult:
         import httpx
+
+        if not sources:
+            raise ValueError("image edit requires a source image")
+
+        if self._edits_mode == "json":
+            async with httpx.AsyncClient(timeout=180) as client:
+                response = await client.post(
+                    f"{self._base_url}/images/edits",
+                    headers={**self._headers(), "Content-Type": "application/json"},
+                    json={
+                        "model": self._model,
+                        "prompt": prompt,
+                        "images": [self._to_data_url(s) for s in sources],
+                    },
+                )
+                response.raise_for_status()
+                payload = response.json()
+            return await self._decode(payload)
 
         files: list[tuple[str, tuple[str, bytes, str]]] = []
         for idx, source in enumerate(sources):
             ext = "png" if sniff_content_type(source) == "image/png" else "jpg"
             files.append(("image[]", (f"source_{idx}.{ext}", source, sniff_content_type(source))))
-        async with httpx.AsyncClient(timeout=120) as client:
+        async with httpx.AsyncClient(timeout=180) as client:
             response = await client.post(
                 f"{self._base_url}/images/edits",
-                headers={"Authorization": f"Bearer {self._api_key}"},
+                headers=self._headers(),
                 data={"model": self._model, "prompt": prompt},
                 files=files,
             )
@@ -155,14 +196,28 @@ class OpenAIImageEngine:
 
 
 def get_image_engine(settings: Settings | None = None) -> ImageEngine:
+    """Resolve the image engine.
+
+    Priority: explicit IMAGE_PROVIDER=mock, then whichever API key is present —
+    OPENAI_API_KEY (official API, multipart edits) or MODELFLARE_API_KEY
+    (OpenAI-compatible gateway with JSON edits) — else the offline mock.
+    """
     resolved = settings or get_settings()
     provider = resolved.image_provider.lower()
     if provider == "mock":
         return MockImageEngine()
-    if provider == "openai" or (provider == "auto" and resolved.openai_api_key):
+    wants_remote = provider in ("auto", "openai")
+    if wants_remote and resolved.openai_api_key:
         return OpenAIImageEngine(
             api_key=resolved.openai_api_key,
             model=resolved.openai_image_model,
             base_url=resolved.openai_base_url,
+        )
+    if wants_remote and resolved.modelflare_api_key:
+        return OpenAIImageEngine(
+            api_key=resolved.modelflare_api_key,
+            model=resolved.openai_image_model,
+            base_url=resolved.modelflare_base_url,
+            edits_mode="json",
         )
     return MockImageEngine()

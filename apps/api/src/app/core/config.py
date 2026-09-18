@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     openai_image_model: str = "gpt-image-2"
     #: OpenAI-compatible base URL — point this at a relay/中转 service.
     openai_base_url: str = "https://api.openai.com/v1"
+    #: Modelflare gateway (MODELFLARE_API_KEY env). Used when no OpenAI key is set.
+    modelflare_api_key: str = ""
+    modelflare_base_url: str = "https://modelflare.dev/v1"
 
     database_url: str = (
         "postgresql+psycopg://insight2listing:insight2listing@localhost:5432/insight2listing"
