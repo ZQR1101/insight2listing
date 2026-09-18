@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_text_model: str = ""
     openai_image_model: str = "gpt-image-2"
+    #: OpenAI-compatible base URL — point this at a relay/中转 service.
+    openai_base_url: str = "https://api.openai.com/v1"
 
     database_url: str = (
         "postgresql+psycopg://insight2listing:insight2listing@localhost:5432/insight2listing"

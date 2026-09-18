@@ -111,13 +111,13 @@ class OpenAIImageEngine:
             )
             response.raise_for_status()
             payload = response.json()
-        return self._decode(payload)
+        return await self._decode(payload)
 
     async def generate(self, prompt: str, width: int, height: int) -> EngineResult:
         import httpx
 
         size = f"{width}x{height}"
-        async with httpx.AsyncClient(timeout=120) as client:
+        async with httpx.AsyncClient(timeout=180) as client:
             response = await client.post(
                 f"{self._base_url}/images/generations",
                 headers={"Authorization": f"Bearer {self._api_key}"},
@@ -125,19 +125,33 @@ class OpenAIImageEngine:
             )
             response.raise_for_status()
             payload = response.json()
-        return self._decode(payload)
+        return await self._decode(payload)
 
-    def _decode(self, payload: dict[str, Any]) -> EngineResult:
+    async def _decode(self, payload: dict[str, Any]) -> EngineResult:
         item = (payload.get("data") or [{}])[0]
         b64 = item.get("b64_json")
-        if not b64:
-            raise ValueError("image response did not contain b64_json")
-        content = base64.b64decode(b64)
-        return EngineResult(
-            content=content,
-            content_type=sniff_content_type(content),
-            model=self._model,
-        )
+        if b64:
+            content = base64.b64decode(b64)
+            return EngineResult(
+                content=content,
+                content_type=sniff_content_type(content),
+                model=self._model,
+            )
+        # Many OpenAI-compatible relays return a hosted URL instead of b64_json.
+        url = item.get("url")
+        if url:
+            import httpx
+
+            async with httpx.AsyncClient(timeout=120) as client:
+                response = await client.get(url)
+                response.raise_for_status()
+            content = response.content
+            return EngineResult(
+                content=content,
+                content_type=sniff_content_type(content),
+                model=self._model,
+            )
+        raise ValueError("image response contained neither b64_json nor url")
 
 
 def get_image_engine(settings: Settings | None = None) -> ImageEngine:
@@ -147,6 +161,8 @@ def get_image_engine(settings: Settings | None = None) -> ImageEngine:
         return MockImageEngine()
     if provider == "openai" or (provider == "auto" and resolved.openai_api_key):
         return OpenAIImageEngine(
-            api_key=resolved.openai_api_key, model=resolved.openai_image_model
+            api_key=resolved.openai_api_key,
+            model=resolved.openai_image_model,
+            base_url=resolved.openai_base_url,
         )
     return MockImageEngine()
