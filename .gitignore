@@ -38,3 +38,6 @@ reports/generated/
 
 # ZCode local tool state
 .zcode/
+
+# App-local runtime data (logs, uploads, generated creatives)
+apps/api/data/
