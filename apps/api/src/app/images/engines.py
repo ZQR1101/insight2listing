@@ -85,6 +85,28 @@ class MockImageEngine:
         )
 
 
+class UpstreamImageError(RuntimeError):
+    """Upstream image API returned an error (status + body surfaced to caller)."""
+
+    def __init__(self, status_code: int, detail: str) -> None:
+        self.status_code = status_code
+        self.detail = detail
+        super().__init__(f"upstream image API {status_code}: {detail[:300]}")
+
+
+def _raise_upstream(response: Any) -> None:
+    if response.status_code >= 400:
+        try:
+            body = response.json()
+            detail = body.get("error", {}).get("message") or str(body)
+            request_id = response.headers.get("x-request-id") or ""
+            if request_id:
+                detail = f"{detail} (request id: {request_id})"
+        except Exception:
+            detail = response.text[:300]
+        raise UpstreamImageError(response.status_code, detail)
+
+
 class OpenAIImageEngine:
     """gpt-image-2 wiring via the OpenAI images API or a compatible gateway.
 
@@ -135,7 +157,7 @@ class OpenAIImageEngine:
                         "images": [self._to_data_url(s) for s in sources],
                     },
                 )
-                response.raise_for_status()
+                _raise_upstream(response)
                 payload = response.json()
             return await self._decode(payload)
 
@@ -150,7 +172,7 @@ class OpenAIImageEngine:
                 data={"model": self._model, "prompt": prompt},
                 files=files,
             )
-            response.raise_for_status()
+            _raise_upstream(response)
             payload = response.json()
         return await self._decode(payload)
 
@@ -164,7 +186,7 @@ class OpenAIImageEngine:
                 headers={"Authorization": f"Bearer {self._api_key}"},
                 json={"model": self._model, "prompt": prompt, "size": size},
             )
-            response.raise_for_status()
+            _raise_upstream(response)
             payload = response.json()
         return await self._decode(payload)
 
@@ -185,7 +207,7 @@ class OpenAIImageEngine:
 
             async with httpx.AsyncClient(timeout=120) as client:
                 response = await client.get(url)
-                response.raise_for_status()
+                _raise_upstream(response)
             content = response.content
             return EngineResult(
                 content=content,

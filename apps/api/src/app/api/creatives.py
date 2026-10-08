@@ -20,6 +20,7 @@ from app.images import (
     review_creative,
     upload_product_image,
 )
+from app.images.engines import UpstreamImageError
 from app.images.storage import get_storage
 from app.models.catalog import ProductCandidate
 from app.models.images import CreativeAsset, ProductImage
@@ -166,6 +167,8 @@ async def generate_creative_endpoint(
         )
     except CreativeGenerationError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except UpstreamImageError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     await session.commit()
     await session.refresh(creative)
     return CreativeAssetRead.model_validate(creative)

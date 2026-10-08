@@ -12,8 +12,8 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-#: Directory two levels above this file: apps/api/
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+#: apps/api/ — four levels above this file (src/app/core/config.py)
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
