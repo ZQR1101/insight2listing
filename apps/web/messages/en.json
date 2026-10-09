@@ -45,6 +45,19 @@
     "workflowDesc": "Evidence pipeline across projects",
     "draft": "Draft",
     "dataImported": "Data imported",
+    "workflowState": {
+      "DRAFT": "Draft",
+      "DATA_IMPORTED": "Data imported",
+      "DATA_VALIDATED": "Data validated",
+      "INSIGHTS_GENERATED": "Insights generated",
+      "INSIGHTS_REVIEWED": "Insights reviewed",
+      "PRODUCT_FACTS_CONFIRMED": "Facts confirmed",
+      "LISTING_GENERATED": "Listing generated",
+      "CREATIVES_GENERATED": "Creatives generated",
+      "COMPLIANCE_CHECKED": "Compliance checked",
+      "READY_FOR_EXPORT": "Ready for export",
+      "EXPORTED": "Exported"
+    },
     "noProjects": "No projects yet. Create one and import candidate data.",
     "newProject": "New Project",
     "open": "Open"

@@ -20,6 +20,7 @@ export function WorkflowStatus({
 }) {
   const t = useTranslations("dashboard");
   const tCommon = useTranslations("common");
+  const tState = useTranslations("workflowState");
 
   return (
     <Card className="@container/card">
@@ -44,7 +45,7 @@ export function WorkflowStatus({
                     </p>
                   </div>
                   <Badge variant={p.status === "DRAFT" ? "outline" : "secondary"}>
-                    {p.status === "DATA_IMPORTED" ? t("dataImported") : t("draft")}
+                    {tState(p.status)}
                   </Badge>
                 </li>
               );

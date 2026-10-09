@@ -45,6 +45,19 @@
     "workflowDesc": "各项目的证据管线进度",
     "draft": "草稿",
     "dataImported": "已导入数据",
+    "workflowState": {
+      "DRAFT": "草稿",
+      "DATA_IMPORTED": "已导入数据",
+      "DATA_VALIDATED": "数据已校验",
+      "INSIGHTS_GENERATED": "洞察已生成",
+      "INSIGHTS_REVIEWED": "洞察已审核",
+      "PRODUCT_FACTS_CONFIRMED": "事实已确认",
+      "LISTING_GENERATED": "Listing 已生成",
+      "CREATIVES_GENERATED": "素材已生成",
+      "COMPLIANCE_CHECKED": "合规已检查",
+      "READY_FOR_EXPORT": "待导出",
+      "EXPORTED": "已导出"
+    },
     "noProjects": "还没有项目。新建一个并导入候选数据吧。",
     "newProject": "新建项目",
     "open": "打开"
